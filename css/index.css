@@ -1,0 +1,124 @@
+html {height: 100%; color:#fff;}
+
+body {background: #222; min-height: 100%; margin: 0; border: 0; padding: 0;}
+
+.display-container{
+    display: block; 
+    height: calc(0.8*(100% - 108px)); 
+    position: absolute; 
+    left: 15px; 
+    bottom: 110px; 
+    border: 2px solid #178A9E; 
+/*    aspect-ratio: 16 / 9; */
+    aspect-ratio: 4 / 3;
+    border-radius: 15px; 
+    overflow: hidden;     
+    box-sizing: border-box;
+    z-index: 5;
+}
+
+.vid-img{
+    height: 100%;
+    margin: 0 auto;
+    display: block;
+}
+
+.button-container{
+    display: flex; 
+    position: absolute; 
+    left:0; 
+    width: 100%; 
+    height: 100%;
+    z-index: 5;
+    justify-content: center;    
+}
+
+ul.buttons{
+    display: flex;
+    position: absolute;
+    bottom: 0;
+    list-style-type: none;    
+    padding: 0;
+}
+ul.buttons > li {
+    float: left;
+}
+
+ul.buttons > li > a.button {
+    display: block;
+    height: 60px;
+    width: 60px;
+    line-height: 60px;
+    border-radius: 50%;
+    font-size: 30px;
+    margin: 5px;
+    background: #222;
+    border: 3px solid #178A9E;
+    text-align: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.stat-container{
+    display:flex; 
+    position: absolute; 
+    right: 0; 
+    width: 200px; 
+    height: 200px; 
+    align-items: center; 
+    justify-content: center;
+    z-index: 10;
+}
+
+.back-disk{
+    position: absolute; 
+    background: #222;    
+    display: block; 
+    height: 80px; 
+    width: 80px; 
+    border: 1px solid #222; 
+    border-radius: 50%;
+    z-index: 11;
+/*    box-shadow: 0px 0px 8px #ddd;    */
+}
+
+.center-disk{
+    position: absolute; 
+    background-image: url("../SysHeart_D.svg");
+    background-size: 50% 50%;
+    background-repeat: no-repeat;
+    background-position: center center;    
+    display: block; 
+    height: 80px;     
+    width: 80px;
+    line-height: 120px;
+    border: 1px solid #178A9E; 
+    border-radius: 50%;    
+    z-index: 13;    
+}
+
+.center-disk.alive {
+    background-image: url("../SysHeart.svg") !important;
+}
+
+.mini-cap{
+    position: absolute; 
+    display: block;    
+    height: 8px; 
+    width: 22px; 
+    background: #333;
+    border: 1px solid #178A9E; 
+    border-radius: 5px;
+    z-index: 12;
+    cursor: pointer;
+}
+
+.mini-cap.live {
+    background: #ccc;
+    border: 1px solid #ccc; 
+}
+
+.mini-cap.down {
+    background: #e74c3c;
+    border: 1px solid #e74c3c;
+}
