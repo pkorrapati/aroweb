@@ -19,12 +19,19 @@
 -->
         <script>            
             const ros = new ROSLIB.Ros({ url: "ws://localhost:9090" });
-            const my_topic_listener = new ROSLIB.Topic({ros, name: '/pulse', messageType: 'std_msgs/Int8'});
+            const onPulse = new ROSLIB.Topic({ros, name: '/pulse', messageType: 'std_msgs/Int8'});
+            const onCamera = new ROSLIB.Topic({ros, name: '/cranialNerve', messageType: 'sensor_msgs/CompressedImage'});
             
             var appClock = null;
             var pulseRate = 0;
             var pulse = false;
             var pulseCount = 0;
+            var vendorURL = window.URL || window.webkitURL;
+            var image = null;
+            
+            $('document').ready(function(){
+                image = $("#cameraStream");
+            });            
 
             var clockTick = function() {
                 if (pulse) {                               
@@ -50,11 +57,11 @@
             }
             
             ros.on("connection", () => {   
-                $('#rosConnect').removeClass('down').addClass('live');
+                $('#heart').addClass('connected');
             });
 
             ros.on("close", () => {
-                $('#rosConnect').removeClass('live').addClass('down');                           
+                $('#heart').removeClass('connected');                           
                 
                 if (appClock != null) {
                     appClock = null;
@@ -63,7 +70,7 @@
             });
 
             // When we receive a message on /my_topic, add its data as a list item to the "messages" ul
-            my_topic_listener.subscribe((msg) => {
+            onPulse.subscribe((msg) => {
                 if (pulseRate != msg.data) {
                     appClock = null;
                 }
@@ -72,12 +79,35 @@
                 pulse = true;
                 pulseCount = 0;
                 
-                beginClock()
-                // const ul = document.getElementById("messages");
-                // const newMessage = document.createElement("li");
-                // newMessage.appendChild(document.createTextNode(message.data));
-                // ul.appendChild(newMessage);
+                beginClock()                
             });
+
+            onCamera.subscribe((msg) => {                  
+                if (image != null) {
+                    image.attr("src", "data:image/jpg;base64," + msg.data)
+                }
+                
+                // var raw = atob(msg.data)
+
+                // var array = new Uint8Array(new ArrayBuffer(raw.length))
+                
+                // for (let i = 0; i < raw.length; i++) {
+                //     array[i] = raw.charCodeAt(i)
+                // }
+
+                // var frameData = Buffer.alloc(msg.width * msg.height * 4)
+                //     for (let i = 0; i < msg.width * msg.height; i++) {
+                //         frameData[4 * i + 0] = array[3 * i + 0]
+                //         frameData[4 * i + 1] = array[3 * i + 1]
+                //         frameData[4 * i + 2] = array[3 * i + 2]
+                //         frameData[4 * i + 3] = 0
+                //     }
+                
+                // var rawImageData = {data: frameData,  width: msg.width, height: msg.height}                
+                                            
+                // image.src = jpeg.encode(rawImageData, 50).data.toString('base64');                          
+            });
+
         </script>
     </head>
     <body>        
@@ -198,7 +228,9 @@
         
     </div>
 -->
-        <div class="display-container"></div>
+        <div class="display-container">
+            <img class="vid-img" id="cameraStream">            
+        </div>
         <div class="button-container">
             <ul class="buttons">
                 <li><a class="button"><i class="fi-graph-bar"></i></a></li>
@@ -208,8 +240,7 @@
             </ul>
         </div>
         <div class="stat-container">
-            <a class="back-disk">&nbsp;</a>                       
-		    <a style="transform: rotateZ(-75deg) translateX(60px);" class="mini-cap down" id="rosConnect" title="ROSConnection"></a>			
+            <a class="back-disk">&nbsp;</a>                       		    			
             <a style="transform: rotateZ(-60deg) translateX(60px);" class="mini-cap down" title="lol"></a>			
 		    <a style="transform: rotateZ(-45deg) translateX(60px);" class="mini-cap live"></a>
 		    <a style="transform: rotateZ(-30deg) translateX(60px);" class="mini-cap"></a>
