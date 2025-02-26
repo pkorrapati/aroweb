@@ -1,0 +1,182 @@
+<!doctype html>
+<!--<html class="no-js svg" lang="en" dir="ltr">-->
+<html class="js svg" lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Robot Control</title>
+
+        <link rel="stylesheet" href='css/foundation-icons.css'>
+        <link rel="stylesheet" href='css/index2.css'>
+        <script src="js/jquery-3.7.1.min.js"></script>
+        <script src="js/roslib.js"></script>
+<!--
+        <link rel="stylesheet" href="css/app.css">
+        <link rel="stylesheet" href="css/webicons.css">
+        <link rel="stylesheet" href="css/foundation-icons.css">
+        <link rel="stylesheet" href="css/index.css">
+-->
+        <script> 
+            function setNeedle(r){
+                r = (r > 1) ? 1 : ((r < 0) ? 0 : r);
+
+                MIN_ANG = -135;
+                MAX_ANG = 135;
+
+                ang = MIN_ANG + r * (MAX_ANG - MIN_ANG);
+
+                $('#needle').get(0).style.setProperty('transform', 'rotateZ(' + ang + 'deg) translateY(-40px)');
+            }
+            
+            $('body').ready(function() { 
+                $('.ticks > .tick').each(function(i, e){ e.style.setProperty('transform', 'rotateZ(' + ((i*5.4) + 135) + 'deg) translate(65px)'); })
+                setNeedle(0.25)
+             });             
+
+            const ros = new ROSLIB.Ros({ url: "ws://localhost:9090" });
+            const my_topic_listener = new ROSLIB.Topic({ros, name: '/pulse', messageType: 'std_msgs/Int8'});
+            
+            var appClock = null;
+            var pulseRate = 0;
+            var pulse = false;
+            var pulseCount = 0;
+
+            var clockTick = function() {
+                if (pulse) {                               
+                    $('#heart').toggleClass('alive');
+                    pulseCount+=1;
+
+                    if (pulseCount >= 2) {
+                        pulseCount = 0;
+                        pulse = false;
+                        $('#heart').removeClass('alive');
+                    }
+                }
+            }
+            
+            var beginClock = function() {
+                if ((appClock == null) && (pulseRate > 0)) {
+                    tDelay = 1000/(pulseRate * 2);
+                    appClock = setInterval(clockTick, tDelay);
+                }
+                else if ((appClock != null) && (pulseRate <= 0)) {
+                    appClock = null;                    
+                }
+            }
+            
+            ros.on("connection", () => {   
+                $('#rosConnect').removeClass('down').addClass('live');
+            });
+
+            ros.on("close", () => {
+                $('#rosConnect').removeClass('live').addClass('down');                           
+                
+                if (appClock != null) {
+                    appClock = null;
+                    pulseRate = 0;
+                }
+            });
+
+            // When we receive a message on /my_topic, add its data as a list item to the "messages" ul
+            my_topic_listener.subscribe((msg) => {
+                if (pulseRate != msg.data) {
+                    appClock = null;
+                }
+
+                pulseRate = (msg.data > 0) ? msg.data : 0;
+                pulse = true;
+                pulseCount = 0;
+                
+                beginClock()
+                // const ul = document.getElementById("messages");
+                // const newMessage = document.createElement("li");
+                // newMessage.appendChild(document.createTextNode(message.data));
+                // ul.appendChild(newMessage);
+            });
+        </script>
+    </head>
+    <body>        
+        <div class="display-container"></div>
+        <div class="gage-container">
+            <div class="outer-circ"></div>
+            <div class="inner-circ"></div>
+            <div id="needle"></div>
+            <span id="velDisplay" class="velo">222</span>
+            <div class="ticks">
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+                <div class="tick"></div>
+
+                <div class="tick"></div>
+            </div>
+        </div>
+        <div class="button-container">
+            <ul class="buttons">
+                <li><a class="button"><i class="fi-graph-bar"></i></a></li>
+                <li><a class="button"><i class="fi-video"></i></a></li>                
+                <li><a class="button"><i class="fi-wrench"></i></a></li>
+                <li><a class="button"><i class="fi-info"></i></a></li>
+            </ul>
+        </div>
+        <div class="stat-container">
+            <a class="back-disk">&nbsp;</a>                       
+		    <a style="transform: rotateZ(-75deg) translateX(60px);" class="mini-cap down" id="rosConnect" title="ROSConnection"></a>			
+            <a style="transform: rotateZ(-60deg) translateX(60px);" class="mini-cap down" title="lol"></a>			
+		    <a style="transform: rotateZ(-45deg) translateX(60px);" class="mini-cap live"></a>
+		    <a style="transform: rotateZ(-30deg) translateX(60px);" class="mini-cap"></a>
+            <a class="center-disk" id="heart">&nbsp;</a>
+        </div>        
+    </body>
+</html>
