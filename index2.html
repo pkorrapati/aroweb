@@ -29,18 +29,23 @@
                 $('#needle').get(0).style.setProperty('transform', 'rotateZ(' + ang + 'deg) translateY(-40px)');
             }
             
-            $('body').ready(function() { 
+            $('document').ready(function() { 
+                image = $("#cameraStream");
                 $('.ticks > .tick').each(function(i, e){ e.style.setProperty('transform', 'rotateZ(' + ((i*5.4) + 135) + 'deg) translate(65px)'); })
                 setNeedle(0.25)
              });             
 
             const ros = new ROSLIB.Ros({ url: "ws://localhost:9090" });
             const my_topic_listener = new ROSLIB.Topic({ros, name: '/pulse', messageType: 'std_msgs/Int8'});
+            const acc_listner = new ROSLIB.Topic({ros, name: '/cmd_vel', messageType: 'geometry_msgs/Twist'});
+            const onCamera = new ROSLIB.Topic({ros, name: '/cranialNerve', messageType: 'sensor_msgs/CompressedImage'});
             
             var appClock = null;
             var pulseRate = 0;
             var pulse = false;
             var pulseCount = 0;
+            var vendorURL = window.URL || window.webkitURL;
+            var image = null;
 
             var clockTick = function() {
                 if (pulse) {                               
@@ -94,6 +99,17 @@
                 // newMessage.appendChild(document.createTextNode(message.data));
                 // ul.appendChild(newMessage);
             });
+
+            acc_listner.subscribe((msg) => {
+                setNeedle(msg.vel.linear.x);
+            });
+
+            onCamera.subscribe((msg) => {                  
+                if (image != null) {
+                    image.attr("src", "data:image/jpg;base64," + msg.data)
+                }
+            });
+
         </script>
     </head>
     <body>        
