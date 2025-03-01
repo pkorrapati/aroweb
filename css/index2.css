@@ -1,6 +1,6 @@
 html {height: 100%; color:#fff;}
 
-body {display: flex; background: #222; min-height: 100%; margin: 0; border: 0; padding: 0; align-items: center; justify-content: center;}
+body {display: flex; background: #222; min-height: 100%; margin: 0; border: 0; padding: 0; align-items: center; justify-content: center; overflow: hidden;}
 
 .display-container{
     position: absolute;
@@ -135,12 +135,67 @@ ul.buttons > li > a.button.selected {
     border: 1px solid #e74c3c;
 }
 
+.compass{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    right: 25%;
+    bottom: 0;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;    
+}
+
+.compass > .rotor{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    height: 90%;
+    border-radius: 50%;
+    box-shadow: 0 0 15px rgba(200, 200, 200,0.3);
+    background-color: rgba(150, 150, 150, 0.1);
+    
+}
+
+.compass .north{
+    position: absolute;
+    /* font-weight: bold; */
+    color: #f1c40f;
+    top:5px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: rgba(50, 50, 50, 0.7);
+    text-align: center;
+    line-height: 20px;
+    transform: rotate(-90deg);
+    font-size: 30px;    
+}
+
+.north > i
+{
+    position: absolute;
+    top: -5px;
+    left: 3px;
+}
+
+.compass .lidar-visual{
+    width: 90%;
+    height: 90%;
+    border-radius: 50%;;
+    /* background: rgba(200, 200, 200,0.3); */
+    box-shadow: inset 0px 0px 60px rgba(50, 50, 50, 0.8);
+}
+
 .gage-container{
     position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
-    left: 800px;
+    left: 25%;
     bottom: 0;
     width: 200px;
     height: 200px;
@@ -193,7 +248,7 @@ ul.buttons > li > a.button.selected {
 {
     width: 4px;
     height: 60px;
-    background: #ac0707;
+    background: #f1c40f; /*#ac0707;*/
     border-top-left-radius: 100%;
     border-top-right-radius: 100%;
     /* border-bottom-left-radius: 4px;
@@ -217,5 +272,4 @@ ul.buttons > li > a.button.selected {
     font-weight: bold;
     font-size: 18pt;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-
 }
