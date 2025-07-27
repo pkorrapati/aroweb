@@ -71,10 +71,11 @@
             const ros = new ROSLIB.Ros({ url: "ws://localhost:9090" });
             // const my_topic_listener = new ROSLIB.Topic({ros, name: '/pulse', messageType: 'std_msgs/Int8'});
             // const onAccel = new ROSLIB.Topic({ros, name: '/cmd_vel', messageType: 'geometry_msgs/Twist'});
-            const onAccel = new ROSLIB.Topic({ros, name: '/throttle', messageType: 'std_msgs/Float32'});
+            const onAccel = new ROSLIB.Topic({ros, name: '/steer/throttle', messageType: 'std_msgs/Float32'});
             const onEgo = new ROSLIB.Topic({ros, name: '/hunter_status', messageType: 'hunter_msgs/HunterStatus'});
-            const onGear = new ROSLIB.Topic({ros, name: '/gear', messageType: 'std_msgs/Int8'});
-            const onCamera = new ROSLIB.Topic({ros, name: '/cam_node/image_raw/compressed', messageType: 'sensor_msgs/CompressedImage'});
+            const onGear = new ROSLIB.Topic({ros, name: '/steer/gear', messageType: 'std_msgs/Int8'});
+            // const onCamera = new ROSLIB.Topic({ros, name: '/cam_node/image_raw/compressed', messageType: 'sensor_msgs/CompressedImage'});
+            const onCamera = new ROSLIB.Topic({ros, name: '/steer/cam_feed', messageType: 'sensor_msgs/CompressedImage'});
             const onLidar = new ROSLIB.Topic({ros, name: '/scan', messageType: 'sensor_msgs/LaserScan'});
             
             var appClock = null;
